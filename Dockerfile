@@ -3,8 +3,6 @@ FROM python:3.13-alpine AS base
 LABEL author="Meysam Azad <meysam@licenseware.io>"
 
 WORKDIR /licenseware
-RUN ls
-COPY * ./
 
 RUN addgroup -S licenseware && \
   adduser -S licenseware -G licenseware
