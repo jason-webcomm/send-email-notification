@@ -25,6 +25,7 @@ inputs:
 runs:
   using: "docker"
   image: "Dockerfile"
+  options: -v ${{ github.workspace }}:/gitea/workspace
   args:
     - --api-key=${{ inputs.api-key }}
     - --from=${{ inputs.from-email }}
