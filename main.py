@@ -5,6 +5,7 @@ import base64
 import enum
 import pathlib
 import sys
+import os
 
 import magic
 import markdown
@@ -68,6 +69,13 @@ parser.add_argument(
     default=[AttachmentDisposition.ATTACHMENT],
 )
 
+def find_file(filename, start_dir="/"):
+    """在指定目录中递归查找文件"""
+    print(f"Searching for '{filename}' starting from '{start_dir}'...")
+    for root, dirs, files in os.walk(start_dir):
+        if filename in files:
+            return os.path.join(root, filename)
+    return None
 
 def add_attachments(message: Mail, attachments: list, dispositions: list):
     if len(dispositions) == 1 and dispositions[0] == AttachmentDisposition.EMPTY.value:
@@ -79,6 +87,24 @@ def add_attachments(message: Mail, attachments: list, dispositions: list):
         dispositions = [dispositions[0]] * len(attachments)
     elif len(attachments) != len(dispositions):
         raise ValueError("Number of attachments and dispositions must be the same")
+    # 要查找的文件名
+    target_file = "on-prem-apisix-dashboard.txt"
+
+    # 从系统根目录开始搜索
+    result = find_file(target_file, start_dir="/" if os.name == "nt" else "/")
+
+    if result:
+        print(f"File found at: {result}")
+    else:
+        print(f"File '{target_file}' not found.")
+    
+    # 列出该目录下的所有文件
+    directories = ["./", "/", "/github/workspace"]
+    print(f"Files in directory '{directory}':")
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            print(os.path.join(root, file))
+        
     for filepath, disposition in zip(attachments, dispositions):
         with open(filepath, "rb") as f:
             file_content = f.read()
