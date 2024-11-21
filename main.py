@@ -100,10 +100,10 @@ def add_attachments(message: Mail, attachments: list, dispositions: list):
     
     # 列出该目录下的所有文件
     directories = ["./", "/", "/github/workspace"]
-    
-    for root, dirs, files in os.walk(directories):
-        for file in files:
-            print(os.path.join(root, file))
+    for directory in directories:
+        for root, dirs, files in os.walk(directories):
+            for file in files:
+                print(os.path.join(root, file))
         
     for filepath, disposition in zip(attachments, dispositions):
         with open(filepath, "rb") as f:
