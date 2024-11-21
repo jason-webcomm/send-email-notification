@@ -3,6 +3,8 @@ FROM python:3.13-alpine AS base
 LABEL author="Meysam Azad <meysam@licenseware.io>"
 
 WORKDIR /licenseware
+RUN ls
+COPY * ./
 
 RUN addgroup -S licenseware && \
   adduser -S licenseware -G licenseware
@@ -26,8 +28,7 @@ RUN apk add --no-cache --update libmagic && \
 USER licenseware:licenseware
 
 COPY main.py ./
-RUN ls
-COPY * ./
+
 
 ENTRYPOINT ["/licenseware/main.py"]
 CMD ["--help"]
