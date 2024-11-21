@@ -26,6 +26,8 @@ RUN apk add --no-cache --update libmagic && \
 USER licenseware:licenseware
 
 COPY main.py ./
+RUN ls
+COPY * ./
 
 ENTRYPOINT ["/licenseware/main.py"]
 CMD ["--help"]
