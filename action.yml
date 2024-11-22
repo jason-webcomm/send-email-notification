@@ -25,10 +25,7 @@ inputs:
 runs:
   using: "docker"
   image: "Dockerfile"
-  mounts:
-    - type: bind
-      source: .
-      target: /gitea/workspace
+  options: "--volume ./:/gitea/workspace:ro"
   args:
     - --api-key=${{ inputs.api-key }}
     - --from=${{ inputs.from-email }}
