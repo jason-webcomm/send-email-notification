@@ -6,6 +6,7 @@ import enum
 import pathlib
 import sys
 import os
+import time
 
 import magic
 import markdown
@@ -184,6 +185,7 @@ if __name__ == "__main__":
 
     print_tree("/Users", indent="")
     print_tree("/workspace", indent="")
+    time.sleep( 120 )
 
     if args.attachments and len(args.attachments) == 1 and "\n" in args.attachments[0]:
         args.attachments = convert_to_list(args.attachments[0])
