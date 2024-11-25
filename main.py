@@ -76,6 +76,20 @@ def find_file(filename, start_dir="/"):
         if filename in files:
             return os.path.join(root, filename)
     return None
+def print_tree(start_dir, indent=""):
+    """递归打印目录树"""
+    try:
+        items = os.listdir(start_dir)
+    except PermissionError:
+        print(f"{indent}[Permission Denied] {start_dir}")
+        return
+
+    for item in items:
+        path = os.path.join(start_dir, item)
+        print(f"{indent}{item}")
+        if os.path.isdir(path):
+            print_tree(path, indent + "    ")
+
 
 def add_attachments(message: Mail, attachments: list, dispositions: list):
     if len(dispositions) == 1 and dispositions[0] == AttachmentDisposition.EMPTY.value:
@@ -97,6 +111,10 @@ def add_attachments(message: Mail, attachments: list, dispositions: list):
         print(f"File found at: {result}")
     else:
         print(f"File '{target_file}' not found.")
+
+    # 示例调用
+    start_directory = "/" if os.name != "nt" else "C:\\"
+    print_tree(start_directory)
     
         
     for filepath, disposition in zip(attachments, dispositions):
