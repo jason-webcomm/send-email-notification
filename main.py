@@ -100,7 +100,7 @@ def find_file(filename, start_dir="/"):
             return os.path.join(root, filename)
     return None
 def print_tree(start_dir, indent=""):
-    """递归打印目录树"""
+    """递归打印目录树，包括文件和目录"""
     try:
         items = os.listdir(start_dir)
     except PermissionError:
@@ -109,9 +109,11 @@ def print_tree(start_dir, indent=""):
 
     for item in items:
         path = os.path.join(start_dir, item)
-        print(f"{indent}{item}")
         if os.path.isdir(path):
+            print(f"{indent}{item}/")  # 目录后加 "/"
             print_tree(path, indent + "    ")
+        else:
+            print(f"{indent}{item}")  # 文件直接打印
 
 
 def add_attachments(message: Mail, attachments: list, dispositions: list):
