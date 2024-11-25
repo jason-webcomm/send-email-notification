@@ -68,6 +68,20 @@ parser.add_argument(
     # to confuse the user by having different defaults than that of the SendGrid.
     default=[AttachmentDisposition.ATTACHMENT],
 )
+def print_dirs(start_dir):
+    """只打印目录的树状结构"""
+    stack = [(start_dir, 0)]  # 使用堆疊模擬遞迴，儲存 (目錄, 深度)
+    while stack:
+        current_dir, depth = stack.pop()
+        try:
+            subdirs = [d for d in os.listdir(current_dir) if os.path.isdir(os.path.join(current_dir, d))]
+        except PermissionError:
+            print("    " * depth + f"[Permission Denied] {current_dir}")
+            continue
+
+        print("    " * depth + os.path.basename(current_dir) + "/")
+        stack.extend((os.path.join(current_dir, subdir), depth + 1) for subdir in reversed(subdirs))
+
 
 def find_file(filename, start_dir="/"):
     """在指定目录中递归查找文件"""
@@ -111,10 +125,6 @@ def add_attachments(message: Mail, attachments: list, dispositions: list):
         print(f"File found at: {result}")
     else:
         print(f"File '{target_file}' not found.")
-
-    # 示例调用
-    start_directory = "/" if os.name != "nt" else "C:\\"
-    print_tree(start_directory)
     
         
     for filepath, disposition in zip(attachments, dispositions):
@@ -154,6 +164,9 @@ if __name__ == "__main__":
         subject=args.subject,
         html_content=markdown.markdown(args.markdown_body),
     )
+
+    start_directory = "/" if os.name != "nt" else "C:\\"
+    print_dirs(start_directory)
 
     if args.attachments and len(args.attachments) == 1 and "\n" in args.attachments[0]:
         args.attachments = convert_to_list(args.attachments[0])
