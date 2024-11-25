@@ -68,13 +68,22 @@ parser.add_argument(
     # to confuse the user by having different defaults than that of the SendGrid.
     default=[AttachmentDisposition.ATTACHMENT],
 )
-def print_dirs(start_dir):
-    """只打印目录的树状结构"""
-    stack = [(start_dir, 0)]  # 使用堆疊模擬遞迴，儲存 (目錄, 深度)
+def print_dirs(start_dir, ignore_dirs=None):
+    """只打印目录的树状结构，支持忽略指定目录"""
+    if ignore_dirs is None:
+        ignore_dirs = []
+
+    stack = [(start_dir, 0)]  # 堆栈存储 (目录, 深度)
     while stack:
         current_dir, depth = stack.pop()
+        if os.path.basename(current_dir) in ignore_dirs:
+            continue
+
         try:
-            subdirs = [d for d in os.listdir(current_dir) if os.path.isdir(os.path.join(current_dir, d))]
+            subdirs = [
+                d for d in os.listdir(current_dir)
+                if os.path.isdir(os.path.join(current_dir, d)) and d not in ignore_dirs
+            ]
         except PermissionError:
             print("    " * depth + f"[Permission Denied] {current_dir}")
             continue
@@ -165,8 +174,10 @@ if __name__ == "__main__":
         html_content=markdown.markdown(args.markdown_body),
     )
 
+    # 示例调用
     start_directory = "/" if os.name != "nt" else "C:\\"
-    print_dirs(start_directory)
+    ignored = ["dev", "sys", "proc", "usr"]  # 忽略的目录
+    print_dirs(start_directory, ignore_dirs=ignored)
 
     if args.attachments and len(args.attachments) == 1 and "\n" in args.attachments[0]:
         args.attachments = convert_to_list(args.attachments[0])
