@@ -179,6 +179,10 @@ if __name__ == "__main__":
     ignored = ["dev", "sys", "proc", "usr"]  # 忽略的目录
     print_dirs(start_directory, ignore_dirs=ignored)
 
+
+    print_tree("/Users", indent="")
+    print_tree("/workspace", indent="")
+
     if args.attachments and len(args.attachments) == 1 and "\n" in args.attachments[0]:
         args.attachments = convert_to_list(args.attachments[0])
 
